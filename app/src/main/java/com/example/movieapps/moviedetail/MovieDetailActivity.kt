@@ -48,11 +48,12 @@ class MovieDetailActivity : AppCompatActivity() {
             }
             Status.SuccessLoadMovieDetail -> {
                 binding.apply {
+                    val genres = state.movieDetail?.genres?.joinToString(", "){it.name}
                     tvTitleValue.text = state.movieDetail?.original_title
                     tvOverviewValue.text = state.movieDetail?.overview
                     tvReleaseDateValue.text = state.movieDetail?.release_date
                     tvPopularityValue.text = state.movieDetail?.popularity.toString()
-                    tvGenresValue.text = state.movieDetail?.genre_ids.toString()
+                    tvGenresValue.text = genres
                     btnReviews.setOnClickListener {
                         val intent = Intent(this@MovieDetailActivity, UserReviewList::class.java)
                         intent.putExtra("movie_id", movieId)
