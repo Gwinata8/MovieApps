@@ -25,6 +25,6 @@ interface MovieApiService {
     @GET("movie/{movie_id}/reviews")
     suspend fun getMovieReviews(
         @Path("movie_id") movieId: String,
-        @Query("page") page: String,
+        @Query("page") page: Int,
     ): UserReviewListEntity
 }

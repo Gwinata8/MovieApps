@@ -39,7 +39,7 @@ class UserReviewList : AppCompatActivity() {
                 viewModel.processIntent(
                     MovieIntent.LoadMovieReviews(
                         movieId = movieId.toString(),
-                        page = (++page).toString()
+                        page = (++page)
                     )
                 )
             }

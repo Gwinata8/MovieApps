@@ -3,6 +3,7 @@ package com.example.movieapps
 import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.google.firebase.crashlytics.buildtools.reloc.org.apache.http.HttpException
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -57,16 +58,31 @@ class MovieViewModel @Inject constructor(
         }
     }
 
-    fun loadMoviereviews(movieId: String, page: String?) {
+    fun loadMovieReviews(movieId: String, page: Int?) {
         viewModelScope.launch {
             reduce(MoviePartialState.Loading)
             try {
                 Log.d("MovieApps", "loadReviews1")
-                val movieReviews = repository.getMovieReviews(movieId, page ?: "1").results
+                val movieReviews = repository.getMovieReviews(movieId, page ?: 1).results
                 Log.d("MovieApps", "loadReviews2: $movieReviews")
                 reduce(MoviePartialState.SuccessLoadMovieReviews(movieReviews))
             } catch (e: Exception) {
+                Log.d(
+                    "MovieApps",
+                    "ERROR = ${e.message}"
+                )
                 reduce(MoviePartialState.Error(e.message.orEmpty()))
+            } catch (e: HttpException) {
+                Log.e(
+                    "MovieApps",
+                    "HTTP ${e.message}"
+                )
+            } catch (e: Exception) {
+                Log.e(
+                    "MovieApps",
+                    "Exception",
+                    e
+                )
             }
         }
     }
@@ -141,7 +157,7 @@ class MovieViewModel @Inject constructor(
             is MovieIntent.LoadMovieReviews -> {
                 Log.d("MovieApps", "processIntent: $intent")
                 Log.d("MovieApps", "processIntent: ${intent.movieId}")
-                loadMoviereviews(intent.movieId, intent.page.toString())
+                loadMovieReviews(intent.movieId, intent.page)
             }
         }
     }
